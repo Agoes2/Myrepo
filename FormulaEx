@@ -1,0 +1,4 @@
+Vlookup(key,tabeldata,numberkolomdata,false)
+-> key = cell acuan pencarian data awal
+-> tabeldata = tabeltempat data yang akan dicari
+-> numberkolomdata = kolom ke berapa tempat data yang diinginkan di tabel data (dihitung dari awal kolom yang cocok key di tabelawal)
