@@ -1,4 +1,42 @@
-Vlookup(key,tabeldata,numberkolomdata,false)
+VLOOKUP($B$41,Referensi!$A$2:$B$13,2,0) -> Vlookup(key,tabeldata,numberkolomdata,false)
 -> key = cell acuan pencarian data awal
 -> tabeldata = tabeltempat data yang akan dicari
 -> numberkolomdata = kolom ke berapa tempat data yang diinginkan di tabel data (dihitung dari awal kolom yang cocok key di tabelawal)
+
+ArrayFormula(TEXTJOIN(CHAR(10),TRUE,IF(Referensi!$H$3:$H$999=$BH15,Referensi!$K$3:$K$999,"")))
+-> Textjoin = untuk menggabungkan text array dari beda kolom jadi satu -> TEXTJOIN(pemisah,true,data array yang akan di join)
+-> ArrayFormula = memasukan data array ke dalam satu cell -> Arrayformula(data array)
+
+CHOOSE(WEEKDAY($G$42),"Minggu","Senin","Selasa","Rabu","Kamis","Jum'at","Sabtu")
+-> membuat hari dalam bahasa indonesia -> CHOOSE(angka,"Minggu","Senin","Selasa","Rabu","Kamis","Jum'at","Sabtu")
+
+COUNTIFS('L2'!$D:$D,$A7,'L2'!$L:$L,$B$4) -> COUNTIFS(range1,kriteria1,range2,kriteria2, dst)
+-> menghitung baris sesuai kriteria tertentu lebih dari 1 kriteria
+COUNTIF('L2'!$D:$D,$A7) -> COUNTIFS(range, kriteria)
+-> menghitung baris sesuai kriteria tertentu
+
+SUMIFS('L1'!$T:$T,'L1'!$K:$K,$A46,'L1'!$P:$P,C$44) -> SUMIFS(data yg dijumlah,range1,kriteria1,range2,kriteria2)
+-> menjumlahkan data dalam kolom sesuai dengan kriteria tertentu lebih dari 1 kriteria
+SUMIF('L1'!$T:$T,'L1'!$K:$K,$A46) ->  SUMIFS(data yg dijumlah,range,kriteria)
+-> menjumlahkan data dalam kolom sesuai dengan kriteria tertentu
+
+=IMPORTRANGE("https://docs.google.com/spreadsheets/d/***********/edit#gid=2134213935","Report!A2:G19") -> =IMPORTRANGE("linkspreadsheet","rangesheet")
+-> mengambil data dari spread lain
+
+DAY(EOMONTH(J44,0)) -> DAY(EOMONTH(tanggal,penambahan bulan))
+-> EOMONTH = mengembalikan nilai tgl terakhir dibulan itu -> EOMONTH(tanggal,0)// nilai 0 dibelakang artinya bulan sesuai tanggal, jika 1 makan akan ditambah 1 bulan dari bulan tsb
+-> DAY = mengambil nilai tanggalnya saja dari hasil EOMONTH
+
+=CONCATENATE(F5," ",P5) -> =CONCATENATE(text1,text1,text3, dst)
+-> menggabungkan beberapa text menjadi 1
+
+=datevalue(LEFT(C6,10)) -> =datevalue(textdate)
+-> merubah format text menjadi format tanggal
+
+=ImportJSON("https://******.co.id/list_item/********","/data/id,/data/wp_city,/data/create_time,/data/create_by,/data/wp_id")
+-> import data dari JSON atau API
+-> format dasar = ImportJSON("link api/json")
+-> format lanjutan =(ImportJSON("link API/JSON","dipilih data tertentu saja dari data API")
+-> format super lanjutan =QUERY(ImportJSON("link API?JSON","data yang dipilih"),"Where Col2 like '%2022-03%'",1)
+-> Syarat bisa pakai importJson = pilih extension - appscript kemudian tambahkan script khusus (script cari di google ya :p )
+
