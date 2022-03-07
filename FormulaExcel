@@ -5,9 +5,15 @@ VLOOKUP($B$41,Referensi!$A$2:$B$13,2,0) -> Vlookup(key,tabeldata,numberkolomdata
 -> tabeldata = tabeltempat data yang akan dicari
 -> numberkolomdata = kolom ke berapa tempat data yang diinginkan di tabel data (dihitung dari awal kolom yang cocok key di tabelawal)
 
+IF(ISERR(SEARCH("visit",$F56,1)),5,15)-> IF(kondisi,true,false)
+->SEARCH(kata dicari,tempat text,mulai char keberapa) -> cari kata tidak case-sensitif, klo mau case sensitif pakai "FIND"
+->ISERR(variable)->mengembalikan variable TRUE klo ada error (semua jenis error)
+IFNA(VLOOKUP(trim($G58),Referensi!$A$24:$B$37,2,0)," ") -> ifna(error #na,isian)
+->memberikan pilihan isian untuk error #NA
+
 
 ArrayFormula(TEXTJOIN(CHAR(10),TRUE,IF(Referensi!$H$3:$H$999=$BH15,Referensi!$K$3:$K$999,"")))
--> Textjoin = untuk menggabungkan text array dari beda kolom jadi satu -> TEXTJOIN(pemisah,true,data array yang akan di join)
+-> Textjoin = untuk menggabungkan text array dari beda kolom jadi satu -> TEXTJOIN(pemisah,true,data array yang akan di join)->char(10) artinya enter
 -> ArrayFormula = memasukan data array ke dalam satu cell -> Arrayformula(data array)
 
 
@@ -19,6 +25,7 @@ COUNTIFS('L2'!$D:$D,$A7,'L2'!$L:$L,$B$4) -> COUNTIFS(range1,kriteria1,range2,kri
 -> menghitung baris sesuai kriteria tertentu lebih dari 1 kriteria
 COUNTIF('L2'!$D:$D,$A7) -> COUNTIFS(range, kriteria)
 -> menghitung baris sesuai kriteria tertentu
+COUNTIFS('L1'!$K:$K,$A29,'L1'!$S:$S,">="&$A$23,'L1'!$S:$S,"<="&$A$24) =>>> 'L1'!$S:$S,">="&$A$23 kolom ss >= A23 (pakai ">="&A23 pakai petik dan &)
 
 
 SUMIFS('L1'!$T:$T,'L1'!$K:$K,$A46,'L1'!$P:$P,C$44) -> SUMIFS(data yg dijumlah,range1,kriteria1,range2,kriteria2)
@@ -29,6 +36,8 @@ SUMIF('L1'!$T:$T,'L1'!$K:$K,$A46) ->  SUMIFS(data yg dijumlah,range,kriteria)
 
 =IMPORTRANGE("https://docs.google.com/spreadsheets/d/***********/edit#gid=2134213935","Report!A2:G19") -> =IMPORTRANGE("linkspreadsheet","rangesheet")
 -> mengambil data dari spread lain
+-> QUERY(IMPORTRANGE("https://docs.google.com/spreadsheets/d/***********/edit#gid=2134213935","Report!A2:G19"),"Select Col1, Col3, Col6",1)
+-> QUERY(IMPORTRANGE("linkspreadsheet","rangesheet"),"query",pilihan pakai header atau tidak)
 
 
 DAY(EOMONTH(J44,0)) -> DAY(EOMONTH(tanggal,penambahan bulan))
@@ -36,8 +45,9 @@ DAY(EOMONTH(J44,0)) -> DAY(EOMONTH(tanggal,penambahan bulan))
 -> DAY = mengambil nilai tanggalnya saja dari hasil EOMONTH
 
 
-=CONCATENATE(F5," ",P5) -> =CONCATENATE(text1,text1,text3, dst)
+=CONCATENATE(TRIM(F5)," ",TRIM(P5)) -> =CONCATENATE(text1,text1,text3, dst)
 -> menggabungkan beberapa text menjadi 1
+-> TRIM-> menghilangkan spasi di awal dan belakang
 
 
 =datevalue(LEFT(C6,10)) -> =datevalue(textdate)
