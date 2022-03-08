@@ -16,7 +16,7 @@ for y in range(3):
 #----------------------------------------------------------------------------------------
 
 # digit python mulai 0 ya, ingat!!!!
-for z in range(1,10,2): # 1 -> mulai, 10 -> sampai digit ke, 2 --> jumlah stepnya
+for z in range(1,10,2):     # 1 -> mulai, 10 -> sampai digit ke, 2 --> jumlah stepnya
   print("ini isi dari z mulai dari 1, sampai  digit ke 10, longkap 2:",z)
 #----------------------------------------------------------------------------------------
 
@@ -28,6 +28,80 @@ while number < 10:
   number+=1
   if(number==5):
     print("ini angka 5")
-    continue
+    continue      #continue buat skip alias longkap
   print(number)
 print("goodbye")
+#----------------------------------------------------------------------------------------
+
+#========================== Matematika dengan Python ====================================
+
+#------------------------------ menjumlahkan angka---------------------------------------
+a=input("masukkan angka:")
+b=input("ditambah dengan angka:")
+print(a," + ",b," =",int(a)+int(b)) # pakai int(a) untuk convert text jadi angka
+
+
+#-------------------------- menghitung luas persegi ------------------------------------
+p=input("masukkan panjang:")
+p=int(p)
+l=input("masukkan lebar:")
+l=int(l)
+print("Luas dari persegi panjang dengan P=",p," dan L=",l,"adalah",p*l)
+
+#----------------------- menghitung keliling lingkaran7 --------------------------------
+
+import math    #import funsi matematika
+
+#Deklarasi
+jari = 0
+keliling = 0
+pi=math.pi   # bisa pake math.pi (syarat import math), atau langsung 22/7 atau 3.14
+
+jari = input("masukkan jari-jari:")
+jari = float(jari)  # convert jari ke float
+keliling = 2*pi*jari
+print("Keliling Lingkaran =",keliling)
+print("Keliling Lingkaran rounding=",round(keliling))   #round untuk pembulatan
+#----------------------------------------------------------------------------------------
+
+#--------------------------- Bilangan ganjil atau Genap ---------------------------------
+angka = 0
+angka =input("masukkan Angka: ")
+angka =int(angka)
+if(angka % 2==1):
+  print("Angka",angka,"adalah ganjil")
+else:
+  print("Angka",angka,"adalah genap")
+
+
+#-------------------------------- Faktorial ----------------------------------------------
+#Faktorial 1 = 1*1
+#Faktorial 4 = 1*2*3*4
+#Faktorial 5 = 1*2*3*4*5
+#dst yaa
+
+x, n, faktorial = 0, 0, 1
+
+n=int(input("masukkan nilai ")) # input langsung di convert ke integer
+
+for x in range (1,n+1):     # range mulai dari 1 sampai ke n+1
+  faktorial = faktorial * x     # bisa juga ditulis -> faktorial *= x
+print(x)
+print(faktorial)
+
+#----------------------------- Menghitung rata2 -------------------------------------------
+
+#Deklarasi
+i = 0 #variabel untuk for
+N = 0 #jumlah data
+x = 0 #nilai yang dimasukkan
+jum = 0 #jumlah nilai yang dimasukkan
+ratarata = 0.0 #rata-rata nilai yang dimasukkan
+
+N = int(input("banyaknya data: "))
+for i in range (0,N):
+  x = int(input("masukkan Nilai: "))
+  jum += x # bisa juga ditulis --> jum = jum + x
+ratarata = jum/N
+print("jumlah nilai:",jum)
+print("rata-rata nilai:",ratarata)
