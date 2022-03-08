@@ -1,0 +1,33 @@
+print("Hello Uler Python")
+#----------------------------------------------------------------------------------------
+
+
+#====================== Looping menggunakan for =========================================
+Hewan=['ayam','kambing','sapi']
+for x in Hewan:
+  print(x)
+print(type(Hewan))
+
+#----------------------------------------------------------------------------------------
+
+for y in range(3):
+  print("ini variabel y ke",y)
+  
+#----------------------------------------------------------------------------------------
+
+# digit python mulai 0 ya, ingat!!!!
+for z in range(1,10,2): # 1 -> mulai, 10 -> sampai digit ke, 2 --> jumlah stepnya
+  print("ini isi dari z mulai dari 1, sampai  digit ke 10, longkap 2:",z)
+#----------------------------------------------------------------------------------------
+
+
+#========================== Looping menggunakan while ===================================
+
+number=0
+while number < 10:
+  number+=1
+  if(number==5):
+    print("ini angka 5")
+    continue
+  print(number)
+print("goodbye")
