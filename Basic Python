@@ -105,3 +105,29 @@ for i in range (0,N):
 ratarata = jum/N
 print("jumlah nilai:",jum)
 print("rata-rata nilai:",ratarata)
+#-------------------------------------------------------------------------------------------
+
+#=================== Nested Loop / Loop Bersarang/ Loop Bertingkat =========================
+#For di dalam For
+#Deklarasi
+N, i, j = 0, 0, 0
+N = int(input("masukkan nilai: "))
+
+for i in range(1,N+1):
+  for j in range(0,i):
+    print("*",end='|')
+  print()
+
+
+#triple for, doble for didalam for
+#Deklarasi
+N, i, j, k = 0, 0, 0, 0
+
+N = int(input("masukkan nilai: "))
+
+for i in range (1, N+1):
+  for j in range (i,N):
+    print(" ",end='')
+  for k in range (0,i):
+    print("*",end='')
+  print()
