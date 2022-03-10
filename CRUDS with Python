@@ -1,0 +1,202 @@
+import mysql.connector # untuk connect ke database mysql
+import os # untuk clear screen nanti
+
+konek = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    passwd="",
+    database="coba"
+)
+
+#if konek.is_connected():
+#    print("Sukses bang")
+#-------------------------------- Membuat Tabel ------------------------------
+'''
+cursor = konek.cursor()
+sql = """CREATE TABLE customers (
+  customer_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255),
+  address Varchar(255)
+)
+"""
+cursor.execute(sql)
+
+print("Tabel customers berhasil dibuat!")
+'''
+#---------------------------------------------------------------------------------------
+#----------------------------------Insert Data----------------------------------------
+'''
+cursor = konek.cursor()
+sql = "insert into karyawan (nama,jenis_kelamin,alamat,tgl_lahir) values(%s,%s,%s,%s)"
+isi = ("Malika","Perempuan","Pulogebang","2002-03-27")
+cursor.execute(sql,isi)
+
+konek.commit()
+
+print("{} data ditambahkan".format(cursor.rowcount))
+'''
+#---------------------------------------------------------------------------------------------
+#------------------------------insert batch data----------------------------------------------
+'''
+cursor = konek.cursor()
+sql = "insert into karyawan (nama,jenis_kelamin,alamat,tgl_lahir) values(%s,%s,%s,%s)"
+isian = [
+    ("Eko","Laki-laki","Babelan","2002-04-27"),
+    ("Ali","laki-laki","Ujung Harapan","2001-03-02"),
+    ("Santi","Perempuan","Kramat Jati","2000-10-27")
+    ]
+for isi in isian:
+    cursor.execute(sql,isi)
+    konek.commit()
+
+print("{} data ditambahkan".format(len(isian)))
+'''
+#----------------------------------------------------------------------------------------------
+#---------------------------------------- View data --------------------------------------------
+'''
+cursor=konek.cursor()
+sql="select * from karyawan"
+cursor.execute(sql)
+
+hasil=cursor.fetchall() # fetchall tampil semua data, bisa pake fetchmany(5)-> ambil 5 data, fetchone() ambil 1 data
+#print(hasil) #pake fetchone langsung print hasil aja 
+
+for data in hasil:
+    print(data)
+'''
+#-------------------------------------------------------------------------------------------------
+#-------------------------------------- Edit/Update Data ------------------------------------------
+'''
+cursor=konek.cursor()
+sql="update karyawan set nama=%s,alamat=%s where id = %s"
+isi=("Nuryanto","Kelapa Gading",12)
+cursor.execute(sql,isi)
+
+konek.commit()
+print("{} Data Berhasil Diubah".format(cursor.rowcount))
+'''
+#----------------------------------------------------------------------------------------------------
+#-------------------------------------- Delete Data -------------------------------------------------
+'''
+cursor=konek.cursor()
+sql="delete from karyawan where nama like %s" #nyoba pake like 
+isi=("%malik%",)
+cursor.execute(sql,isi)
+print(cursor)
+konek.commit()
+print("{} Data Berhasil Dihapus".format(cursor.rowcount))
+'''
+#-----------------------------------------------------------------------------------------------------
+#---------------------------------------------Search Data --------------------------------------------
+'''
+cursor = konek.cursor()
+keyword = input("Kata kunci: ")
+sql = "SELECT * FROM karyawan WHERE nama LIKE %s OR alamat LIKE %s"
+isi = ("%{}%".format(keyword), "%{}%".format(keyword))
+cursor.execute(sql, isi)
+results = cursor.fetchall()
+  
+if cursor.rowcount == 0:
+    print("Tidak ada data")
+else:
+    for data in results:
+      print(data)
+'''
+#===================================== Buat Program CRUDS with Python =================================
+def insert_data(konek):
+    nama=input("Masukkan Nama :")
+    alamat=input("Masukkan Alamat :")
+    jenkel=input("Jenis Kelamin :")
+    tgl_lahir=input("Masukkan Tanggal lahir :")
+    
+    cursor=konek.cursor()
+    sql="insert into karyawan (nama,jenis_kelamin,alamat,tgl_lahir) values (%s,%s,%s,%s)"
+    isi=(nama,jenkel,alamat,tgl_lahir)
+    cursor.execute(sql,isi)
+    konek.commit()
+    
+    print("{} Data Berhasil disimpan".format(cursor.rowcount))
+
+def show_data(konek):
+    sql="select * from karyawan"
+    cursor=konek.cursor()
+    cursor.execute(sql)
+    hasil=cursor.fetchall()
+
+    if cursor.rowcount == 0:
+        print("Tidak ada Data")
+    else:
+        for data in hasil:
+            print(data)
+
+def update_data(konek):
+    cursor=konek.cursor()
+    show_data(konek)
+    id = input("Masukkan Nomer ID yang akan dirubah :")
+    nama=input("Nama Baru :")
+    alamat=input("Alamat baru :")
+
+    sql="update karyawan set nama=%s,alamat=%s where id=%s"
+    isi=(nama,alamat,id)
+    cursor.execute(sql,isi)
+    konek.commit()
+    print("{} Data berhasil diubah".format(cursor.rowcount))
+
+def delete_data(konek):
+    cursor=konek.cursor()
+    show_data(konek)
+    id = input("Masukkan ID data yang akan dihapus :")
+    sql="delete from karyawan where id=%s"
+    isi=(id,)
+    cursor.execute(sql,isi)
+    konek.commit()
+    print("{} Data berhasil dihapus".format(cursor.rowcount))
+
+def cari_data(konek):
+    cursor=konek.cursor()
+    cari=input("Masukkan nama atau alamat yang anda cari :")
+    sql="SELECT * FROM karyawan WHERE nama LIKE %s or alamat LIKE %s"
+    isi=("%{}%".format(cari), "%{}%".format(cari))
+    cursor.execute(sql, isi)
+    hasil=cursor.fetchall()
+
+    if cursor.rowcount == 0:
+        print("Data yang Cari Tidak Ditemukan")
+    else:
+        for data in hasil:
+            print(data)
+
+def show_menu(konek):
+    print("=== APLIKASI DATABASE PYTHON ===")
+    print("1. Insert Data")
+    print("2. Tampilkan Data")
+    print("3. Update Data")
+    print("4. Hapus Data")
+    print("5. Cari Data")
+    print("0. Keluar")
+    print("------------------")
+    
+    menu = input("Pilih menu> ")
+
+    #clear screen
+    os.system="clear"
+
+    if menu =="1":
+        insert_data(konek)
+    elif menu == "2":
+        show_data(konek)
+    elif menu == "3":
+        update_data(konek)
+    elif menu == "4":
+        delete_data(konek)
+    elif menu == "5":
+        cari_data(konek)
+    elif menu == "0":
+        #show_menu(konek)
+        exit()
+    else:
+        print("Pilihan Menu Salah!")
+
+if __name__ == "__main__":
+    while(True):
+        show_menu(konek)
