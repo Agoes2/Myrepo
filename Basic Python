@@ -131,3 +131,70 @@ for i in range (1, N+1):
   for k in range (0,i):
     print("*",end='')
   print()
+#------------------------------------------------------------------------------------------------
+
+#===================================== Prosedure ================================================
+# sebuah prosedure diawali dengan def
+
+# ------------------ prosedur luas lingkaran -----------------------------------------------------
+
+import math # agar bisa menggunakan fungsi matematika
+def luaslingkaran(jejari):
+    pi = math.pi    #bisa juga pake 22/7 atau 3.14 tanpa perlu import math
+    luaslingkar = pi*jejari*jejari
+
+    print("Luas: ",luaslingkar)
+#prosedure selesai
+
+#main project
+if __name__ == "__main__": # untuk menandakan bahwa main projectnya disini
+  r = float(input("Masukkan jari-jari lingkaran: "))
+  luaslingkaran(r) # ini manggil prosedurenya dengan inputan r
+  
+#----------------------------------------------------------------------------------------------------
+
+# ----------------------- Prosedur luas segitiga dengan global --------------------------------------
+'''
+pake global agar variable bisa dipanggil disemua line contoh klo yg di atas pada prosedure luas lingkaran,
+variabel luaslingkar ga bisa dipanggil di main, misal *print(luaslingkar)* di main, maka akan error. nah biar bisa dipanggil maka harus pake global luaslingkar 
+'''
+#contoh def dengan global
+
+def luassegitiga(alas,tinggi):
+  global luas     # agar luas bisa dipanggil secara global di deklarasi dan main
+  luas = alas*tinggi/2
+
+if __name__ == "__main__":
+  a, t, luas = 0.0, 0.0, 0.0
+  a = float(input("Masukkan alas: "))
+  t = float(input("masukkan tinggi: "))
+  luassegitiga(a,t)
+
+  print("Luas Segitiga: ",luas)   # dsini variabel luas bisa dipanggil karena sudah di deklarasi dengan global
+# ---------------------------------------------------------------------------------------------------------------------
+
+# ------------------------------ buat prosedure gabungin fungsi luas lingkaran dan segitiga ---------------------------
+
+# ---------------------- prosedur luas lingkaran dan luas segitiga -------------------------
+
+def luaslingkaran(jari):
+    pi = 22/7
+    luasslingkar = pi*jari*jari
+
+    print("Luas Lingkaran:",luasslingkar)
+
+def luassegitigaa(alas,tinggi):
+    luassegi3 = alas*tinggi/2
+    print("Luas Segitiga:",luassegi3)
+
+if __name__ == "__main__":
+  a = int(input("masukkan 1 untuk Lingkaran, 2 untuk segitiga : "))
+  if a == 1:
+    r = float(input("masukkan jari-jari: "))
+    luaslingkaran(r)
+  elif a == 2:
+    a = float(input("Masukkan alas: "))
+    t = float(input("Masukkan tinggi: "))
+    luassegitigaa(a,t)
+  else:
+    print("salah Masuk Bang!!!")
