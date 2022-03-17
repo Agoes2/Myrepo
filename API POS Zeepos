@@ -1,0 +1,333 @@
+<?php
+require_once "zeeposcon.php";
+	if(function_exists($_GET['function'])) {
+        $_GET['function']();
+    	}   
+	function view_data()
+	{
+		global $connect;      
+		//$query = $connect-> query("SELECT * FROM profile limit=$limit");
+		if (!empty($_POST["id"]) and !empty($_POST["email"])) {
+			$response = array(
+				'status' => 0,
+				'message' =>'Failed',
+				'Error' => 'Please select one of the option, id or email'
+			);
+		}
+		
+		elseif (!empty($_POST["expired"]) and empty($_POST["email_only"]) and empty($_POST["filter_email"])) {
+			$expired = $_POST["expired"];
+			$query = "SELECT id, name, email, max_token, expire_date FROM profile where expire_date like '%$expired%' order by expire_date desc";
+			///////
+			$result = $connect->query($query);
+			while($row = mysqli_fetch_object($result))
+			{
+				$data[] = $row;
+			}            
+			
+			if($data){
+				$response = array(
+					'status' => 1,
+					'message' =>'Success',
+					'data' => $data
+				);       
+			}
+			else{
+				$response=array(
+					'status' => 0,
+					'message' =>'No Data Found'
+				);
+			}
+		}
+		
+		elseif (!empty($_POST["expired"]) and !empty($_POST["filter_email"]) and empty($_POST["email_only"])) {
+			$expired = $_POST["expired"];
+			$filter_email = $_POST["filter_email"];
+			$query = "SELECT id, name, email, max_token, expire_date FROM profile where expire_date like '%$expired%' and email like '%$filter_email%' order by name asc";
+			///////
+			$result = $connect->query($query);
+			while($row = mysqli_fetch_object($result))
+			{
+				$data[] = $row;
+			}            
+			
+			if($data){
+				$response = array(
+					'status' => 1,
+					'message' =>'Success',
+					'data' => $data
+				);               
+			}
+			else {
+				$response=array(
+					'status' => 0,
+					'message' =>'No Data Found'
+				);
+			}
+		}
+		
+		elseif (!empty($_POST["email_only"]) and !empty($_POST["expired"]) and empty($_POST["filter_email"])) {
+			$expired = $_POST["expired"];
+			$query = "SELECT email FROM profile where expire_date like '%$expired%' order by email asc";
+			///////
+			$result = $connect->query($query);
+			while($row = mysqli_fetch_object($result))
+			{
+				$data[] = $row;
+			}    
+			
+			if($data){
+				foreach ($data as $key => $data1) {
+					echo "{$data1->email}\n";
+				}
+				$response = array(
+					'status' => 1,
+					'message' =>'Success',
+					'total data' => count($data)
+				);               
+			}
+			else {
+				$response=array(
+					'status' => 0,
+					'message' =>'No Data Found'
+				);
+			}
+		}
+		
+		elseif (!empty($_POST["email_only"]) and !empty($_POST["expired"]) and !empty($_POST["filter_email"])) {
+			$expired = $_POST["expired"];
+			$filter_email = $_POST["filter_email"];
+			$query = "SELECT email FROM profile where expire_date like '%$expired%' and email like '%$filter_email%' order by email asc";
+			///////
+			$result = $connect->query($query);
+			while($row = mysqli_fetch_object($result))
+			{
+				$data[] = $row;
+			}    
+			
+			if($data){
+				foreach ($data as $key => $data1) {
+					echo "{$data1->email}\n";
+				}
+				$response = array(
+					'status' => 1,
+					'message' =>'Success',
+					'total data' => count($data)
+				);               
+			}
+			else {
+				$response=array(
+					'status' => 0,
+					'message' =>'No Data Found'
+				);
+			}
+		}
+		
+		elseif (!empty($_POST["email"])){
+			$email = $_POST["email"];
+			$query ="SELECT * FROM profile where email like '%$email%'";
+			///////
+			$result = $connect->query($query);
+			while($row = mysqli_fetch_object($result)){
+				$data[] = $row;
+			}            
+			if($data){
+				$response = array(
+					'status' => 1,
+					'message' =>'Success',
+					'data' => $data
+				);               
+			}
+			else {
+				$response=array(
+					'status' => 0,
+					'message' =>'No Data Found'
+				);
+			}
+		}
+		elseif (!empty($_POST["id"])){
+			$id = $_POST["id"];
+			$query = "SELECT * FROM profile where id=$id";
+			$result = $connect->query($query);
+			while($row = mysqli_fetch_object($result))
+			{
+				$data[] = $row;
+			}
+			
+			if($data){
+				$response = array(
+					'status' => 1,
+					'message' =>'Success',
+					'data' => $data
+				);               
+			}
+			else {
+				$response=array(
+					'status' => 0,
+					'message' =>'No Data Found'
+				);
+			}
+		}
+		else{
+			$response = array(
+				'status' => 0,
+				'message' =>'Failed',
+				'Error' => 'Please choose option'
+			);
+		}
+		     
+		header('Content-Type: application/json');
+		echo json_encode($response);
+	}
+	
+	/////Fungsi untuk ubah expire_date/////
+	function edit_expired(){
+        global $connect;
+		///fungsi cek tanggal
+		function dateValid($date, $format = 'Y-m-d H:i:s'){
+		$dt = DateTime::createFromFormat($format, $date);
+		return $dt && $dt->format($format) === $date;
+		}
+		function dateValid1($date, $format = 'Y-m-d'){
+		$dt = DateTime::createFromFormat($format, $date);
+		return $dt && $dt->format($format) === $date;
+		}//sampai sini fungsi cek tanggal 
+		
+		if (!empty($_POST["email"]) and !empty($_POST["id"])){
+			$response = array(
+				'status' => 0,
+				'message' =>'Failed',
+				'Error' => 'Please select one of the option, id or email'
+			);
+		}
+		elseif(!empty($_POST["email"]) and !empty($_POST["expire_date"]) and !empty($_GET["batch"])) {
+			$email = $_POST["email"];
+			$email = str_replace(chr(0x0D), ',', $email); //ganti karakter \r (ganti baris) jadi , (koma)
+			$email = str_replace(chr(0x0A), ',', $email); //ganti karakter \n (ganti baris) jadi , (koma)
+			$email = explode(',',$email);
+			$email = join("','",$email);
+			$check = array('expire_date' => '');
+			$check_match = count(array_intersect_key($_POST, $check));     
+			if (dateValid($_POST['expire_date']) or dateValid1($_POST['expire_date'])){
+				if($check_match == count($check)){
+					$result = mysqli_query($connect, "UPDATE profile SET 
+					expire_date = '$_POST[expire_date]' WHERE email in ('$email')");
+					$query = "UPDATE profile SET expire_date = '$_POST[expire_date]' WHERE email in ('$email')";
+					if($result){
+						$response=array(
+							'status' => 1,
+							'message' =>'Update Success',
+							'data updated' => explode(',',$email)
+						);
+					}
+					else{
+						$response=array(
+							'status' => 0,
+							'message' =>'Update Failed'                  
+						);
+					}
+				}
+				else{
+					$response=array(
+						'status' => 0,
+						'message' =>'Wrong Parameter',
+						'data'=> $email
+					);
+				}
+			}
+			else{
+				$response=array(
+					'status' => 0,
+					'message' =>'Wrong Date Format, Please use Y-m-d or Y-m-d H:i:s formats'
+				);
+			}  
+		
+		}
+		elseif(!empty($_POST["email"]) and !empty($_POST["expire_date"])) {
+			$email = $_POST["email"];
+			$check = array('expire_date' => '');
+			$check_match = count(array_intersect_key($_POST, $check));     
+			if (dateValid($_POST['expire_date']) or dateValid1($_POST['expire_date'])){
+				if($check_match == count($check)){
+					$result = mysqli_query($connect, "UPDATE profile SET 
+					expire_date = '$_POST[expire_date]' WHERE email = '$email'");
+				 
+					if($result){
+						$response=array(
+							'status' => 1,
+							'message' =>'Update Success',
+							'email' => $email,
+							'new expire date' => $_POST['expire_date']
+						);
+					}
+					else{
+						$response=array(
+							'status' => 0,
+							'message' =>'Update Failed'                  
+						);
+					}
+				}
+				else{
+					$response=array(
+						'status' => 0,
+						'message' =>'Wrong Parameter'
+					);
+				}
+			}
+			else{
+				$response=array(
+					'status' => 0,
+					'message' =>'Wrong Date Format, Please use Y-m-d or Y-m-d H:i:s format'
+				);
+			}
+		}   
+		elseif (!empty($_POST["id"]) and !empty($_POST["expire_date"])) {
+			$id = $_POST["id"];
+			$check = array('expire_date' => '');
+			$check_match = count(array_intersect_key($_POST, $check));         
+			if (dateValid($_POST['expire_date']) or dateValid1($_POST['expire_date'])){
+				if($check_match == count($check)){
+					$result = mysqli_query($connect, "UPDATE profile SET 
+					expire_date = '$_POST[expire_date]' WHERE id = '$id'");
+				 
+					if($result){
+						$response=array(
+							'status' => 1,
+							'message' =>'Update Success',
+							'id' =>$id,
+							'new expire date' => $_POST['expire_date']
+						);
+					}
+					else
+					{
+						$response=array(
+							'status' => 0,
+							'message' =>'Update Failed'                  
+						);
+					}
+				}
+				else{
+					$response=array(
+						'status' => 0,
+						'message' =>'Wrong Parameter',
+						'data'=> $email
+					);
+				}
+			}
+			else{
+				$response=array(
+					'status' => 0,
+					'message' =>'Wrong Date Format, Please use Y-m-d or Y-m-d H:i:s format'
+				);
+			}
+		}
+		else{
+			$response=array(
+				'status' => 0,
+				'message' =>'Wrong Parameter'
+			);
+		}
+		header('Content-Type: application/json');
+		echo json_encode($response);
+	}
+?>
