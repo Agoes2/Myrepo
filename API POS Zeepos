@@ -2,7 +2,7 @@
 require_once "zeeposcon.php";
 	if(function_exists($_GET['function'])) {
         $_GET['function']();
-    	}   
+    } 
 	function view_data()
 	{
 		global $connect;      
@@ -17,7 +17,7 @@ require_once "zeeposcon.php";
 		
 		elseif (!empty($_POST["expired"]) and empty($_POST["email_only"]) and empty($_POST["filter_email"])) {
 			$expired = $_POST["expired"];
-			$query = "SELECT id, name, email, max_token, expire_date FROM profile where expire_date like '%$expired%' order by expire_date desc";
+			$query = "SELECT id, name, email,expire_date FROM profile where expire_date like '%$expired%' order by expire_date desc";
 			///////
 			$result = $connect->query($query);
 			while($row = mysqli_fetch_object($result))
@@ -330,4 +330,98 @@ require_once "zeeposcon.php";
 		header('Content-Type: application/json');
 		echo json_encode($response);
 	}
-?>
+  
+	function update_token(){
+      	global $connect;
+		if (!empty($_POST["id"]) and !empty ($_POST["email"])) {
+			$response = array(
+				'status' => 0,
+				'message' =>'Failed',
+				'Error' => 'Please one of the option, ID or Email'
+			);
+		}
+		elseif (empty($_POST["id"]) and empty($_POST["email"])) {
+			$response = array(
+				'status' => 0,
+				'message' =>'Failed',
+				'Error' => 'Please one of the option, ID or Email'
+			);
+		}
+		elseif (empty($_POST["token"])) {
+			$response = array(
+				'status' => 0,
+				'message' =>'Failed',
+				'Error' => 'Please insert token amount'
+			);
+		}
+		elseif (!empty($_POST["token"]) and !empty($_POST["email"])) {
+			$email=$_POST["email"];
+			$token=$_POST["token"];
+			//$result = mysqli_query($connect, "UPDATE profile SET max_token = '$_POST[token]' WHERE email = '$email'");
+			if (is_numeric($token)){
+				$result = mysqli_query($connect,"Select * from profile Where email ='$email'");
+				if(mysqli_num_rows($result) > 0){
+					$result1 = mysqli_query($connect, "UPDATE profile SET max_token = '$_POST[token]' WHERE email = '$email'");
+					$response=array(
+						'status' => 1,
+						'message' =>'Update Success',
+						'email' =>$email,
+						'new token' => $_POST['token']
+					);
+				}
+				else
+				{
+					$response=array(
+						'status' => 0,
+						'message' =>"Update Failed, Email '".$email."' cannot be found"                
+					);
+				}
+			}
+			else {
+				$response=array(
+					'status' => 0,
+					'message' =>"Please input numeric format for token"                
+				);
+			}
+		}
+		elseif (!empty($_POST["token"]) and !empty($_POST["id"])) {
+			$id=$_POST["id"];
+			$token=$_POST["token"];
+			//$result = mysqli_query($connect, "UPDATE profile SET max_token = '$_POST[token]' WHERE email = '$email'");
+			if (is_numeric($id) and is_numeric($token)) {
+				$result = mysqli_query($connect,"Select * from profile Where id ='$id'");
+				if(mysqli_num_rows($result) > 0){
+					$result1 = mysqli_query($connect, "UPDATE profile SET max_token = '$_POST[token]' WHERE id = '$id'");
+					$response=array(
+						'status' => 1,
+						'message' =>'Update Success',
+						'email' =>$id,
+						'new token' => $_POST['token'],
+						'jumlah row' => mysqli_num_rows($result)
+					);
+				}
+				else
+				{
+					$response=array(
+						'status' => 0,
+						'message' =>"Update Failed, ID '".$id."' cannot be found"                
+					);
+				}
+			}
+			else {
+				$response=array(
+					'status' => 0,
+					'message' =>"Please input numeric format for ID and token"                
+				);
+			}
+		}
+		else {
+			$response=array(
+				'status' => 0,
+				'message' =>'Wrong Parameter'
+			);
+		}
+		header('Content-Type: application/json');
+		echo json_encode($response);
+   }
+ ?>
